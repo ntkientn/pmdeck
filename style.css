@@ -1,0 +1,472 @@
+:root {
+    --bg-main: #0f132a; 
+    --header-bg: #1e2548;
+    --column-bg: rgba(22, 27, 53, 0.65); /* Nền cột bán trong suốt hitech */
+    --card-bg: #161b35;
+    --card-border: rgba(99, 102, 241, 0.28);
+    --card-hover-border: #22d3ee;
+    
+    --accent-indigo: #818cf8; 
+    --accent-cyan: #22d3ee;   
+    --accent-magenta: #f472b6; 
+    --text-main: #ffffff;
+    --text-muted: #94a3b8;
+    
+    --color-active: #10b981;
+    --color-coming: #fbbf24;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    min-height: 100vh;
+    padding: 1rem 1.5rem; /* Padding top/bottom = 1rem, left/right = 1.5rem*/
+    position: relative;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- BACKGROUND SYSTEM (WEBNET STYLE) --- */
+.cyber-bg-system {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+.digital-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(99, 102, 241, 0.22) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.22) 1px, transparent 1px);
+    background-size: 60px 60px;
+}
+.mouse-glow-pointer {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    top: -9999px;
+    left: -9999px;
+    transition: transform 0.08s ease-out;
+    will-change: transform, top, left;
+}
+.network-stream {
+    position: absolute;
+    height: 2px;
+    width: 400px;
+    filter: drop-shadow(0 0 10px var(--accent-indigo));
+    opacity: 0.8;
+}
+.line-1 { top: 25%; left: -400px; background: linear-gradient(90deg, transparent, var(--accent-indigo), transparent); animation: sweepRight 6s linear infinite; }
+.line-2 { top: 75%; right: -400px; background: linear-gradient(90deg, transparent, var(--accent-magenta), transparent); animation: sweepLeft 9s linear infinite; }
+
+@keyframes sweepRight { 0% { left: -400px; } 100% { left: 100%; } }
+@keyframes sweepLeft { 0% { right: -400px; } 100% { right: 100%; } }
+
+/* --- CONTAINER --- */
+.container {
+    max-width: 1400px; /* Nới rộng container để vừa không gian 3 cột dàn ngang */
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+/* BACK BUTTON & HEADER */
+.back-to-hub {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--accent-cyan);
+    text-decoration: none;
+    font-size: 0.80rem;
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+    transition: all 0.2s ease;
+    width: fit-content;
+}
+.back-to-hub:hover {
+    color: #fff;
+    transform: translateX(-3px);
+}
+
+header {
+    display: flex;
+    align-items: flex-start; /* Kéo toàn bộ nội dung neo lên mép trên (Top) */
+    justify-content: space-between;
+    gap: 30px; /* Tạo khoảng hở an toàn để chữ bên trái không dính sát vào bộ đếm */
+    background: var(--header-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.25rem 2rem;
+    border-radius: 16px;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.header-title {
+    flex: 1; /* Cho phép phần chữ giãn ra chiếm phần không gian còn lại */
+}
+.header-title h1 {
+    font-size: 1.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+.header-title h1 i {
+    color: var(--accent-cyan);
+    filter: drop-shadow(0 0 8px var(--accent-cyan));
+}
+.header-title p {
+    font-size: 0.98rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem; /* Tăng khoảng cách từ Title xuống mô tả */
+    line-height: 1.6;   /* QUAN TRỌNG: Tăng khoảng cách giữa các dòng chữ (từ 1.4 lên 1.6) */
+}
+.header-counter {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Ép bộ đếm và nhãn dạt sát lề phải */
+    flex-shrink: 0; /* QUAN TRỌNG: Cấm trình duyệt ép nhỏ khối này dù chữ bên trái có dài đến đâu */
+    margin-top: 5px; /* Đẩy nhẹ xuống vài pixel để đường chân chữ số 3/12 ngang hàng hoàn hảo với chữ PM Deck */
+}
+.counter-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    text-align: right;
+    line-height: 1; /* Thu gọn chiều cao của số */
+}
+.counter-label {
+    font-size: 0.87rem;
+    color: var(--text-muted);
+    text-align: right; /* Căn phải chữ */
+    white-space: nowrap; /* QUAN TRỌNG: Cấm rớt dòng, ép chữ "Modules Ready" luôn nằm trên 1 hàng ngang */
+    margin-top: 6px;
+}
+
+/* ẨN MOBILE TABS TRÊN DESKTOP */
+.mobile-tabs-container {
+    display: none; /* Mặc định giấu đi */
+}
+
+/* --- TRELLO MULTI-COLUMN BOARD LAYOUT --- */
+.trello-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Định hình cứng 3 cột cân bằng */
+    gap: 1.75rem;
+    align-items: start;
+    flex-grow: 1;
+}
+
+/* COLUMN BOX */
+.trello-column {
+    background: rgba(16, 20, 44, 0.85);
+    border: 1px solid rgba(99, 102, 241, 0.35);
+    border-radius: 18px;
+    padding: 1.5rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+}
+
+.column-header {
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent-cyan);
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid rgba(34, 211, 238, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+.column-header i {
+    color: var(--accent-cyan);
+}
+
+/* CARDS VERTICAL LIST INSIDE COLUMN */
+.cards-vertical-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* COCKPIT CARD */
+.tool-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    cursor: pointer;
+    transition: all 0.22s ease-in-out;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+.tool-card.coming-soon {
+    cursor: not-allowed;
+    opacity: 0.55;
+    border-style: dashed;
+}
+.tool-card:not(.coming-soon):hover {
+    transform: translateY(-3px);
+    border-color: var(--card-hover-border);
+    box-shadow: 0 10px 25px rgba(34, 211, 238, 0.18);
+    background: #1c2244;
+}
+
+.card-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.icon-wrapper {
+    width: 38px;
+    height: 38px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-cyan);
+    font-size: 1.1rem;
+}
+.tool-card:not(.coming-soon):hover .icon-wrapper {
+    background: var(--accent-cyan);
+    color: var(--bg-main);
+    border-color: transparent;
+    box-shadow: 0 0 10px var(--accent-cyan);
+}
+
+.status-dot {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(0, 0, 0, 0.4);
+}
+.dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+}
+
+.card-meta h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.4;
+}
+
+.card-meta p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.6; /* Tăng từ 1.5 lên 1.6 để chữ dễ đọc hơn */
+    margin-top: 0.75rem; /* Tăng khoảng cách giữa Tiêu đề Card và Mô tả */
+}
+
+.card-action-arrow {
+    margin-top: auto;
+    text-align: right;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+.tool-card:not(.coming-soon):hover .card-action-arrow {
+    color: var(--accent-cyan);
+    transform: translateX(4px);
+}
+
+/* Hiệu ứng khi user chạm/nhấn trên thiết bị di động */
+.tool-card:not(.coming-soon):active {
+    transform: scale(0.96); /* Lún nhẹ thẻ card xuống */
+    border-color: var(--card-hover-border);
+    box-shadow: 0 0 15px rgba(34, 211, 238, 0.4);
+    background: #1c2244;
+    transition: all 0.1s ease; /* Phản hồi nhanh hơn hover chuột */
+}
+
+/* Kích hoạt màu icon khi chạm trên mobile */
+.tool-card:not(.coming-soon):active .icon-wrapper {
+    background: var(--accent-cyan);
+    color: var(--bg-main);
+}
+
+footer {
+    text-align: center;
+    margin-top: auto;
+    padding: 2.5rem 0 1rem 0;
+    color: #475569;
+    font-size: 0.85rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* RESPONSIVE CHO MOBILE/TABLET */
+@media (max-width: 1024px) {
+    /* --- THIẾT KẾ LẠI HEADER CHO MOBILE DẠNG LƯỚI (GRID) --- */
+    header {
+        display: grid;
+        grid-template-columns: 1fr auto; /* Chia 2 cột: Cột trái tự co giãn, cột phải vừa khít bộ đếm */
+        row-gap: 1.25rem;    /* Khoảng cách giữa hàng trên (Title) và hàng dưới (Paragraph) */
+        column-gap: 15px; /* Khoảng cách giữa chữ PM Deck và bộ đếm */
+        padding: 1.25rem 1rem;
+        text-align: left;
+    }
+
+    .header-title {
+        display: contents; /* "Hòa tan" div bọc ngoài để h1 và p tham gia trực tiếp vào Grid */
+    }
+
+    .header-title h1 {
+        grid-column: 1 / 2; /* Nằm ở hàng 1, cột 1 (Góc trên trái) */
+        grid-row: 1;
+        font-size: 1.35rem;
+        align-self: center;
+    }
+
+    .header-counter {
+        grid-column: 2 / 3; /* Nằm ở hàng 1, cột 2 (Góc trên phải) */
+        grid-row: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        align-self: right;
+    }
+
+    .header-title p {
+        grid-column: 1 / 3; /* Trải dài chiếm trọn cả 2 cột (1 và 2) */
+        grid-row: 2;        /* Bị đẩy xuống hàng thứ 2 */
+        font-size: 0.85rem;
+        line-height: 1.5;
+        margin-top: 0;      /* Bỏ margin cũ vì đã có row-gap của Grid */
+        color: var(--text-muted);
+    }
+
+    .counter-value {
+        font-size: 1rem;
+    }
+
+    .counter-label {
+        font-size: 0.65rem;
+    }
+
+    /* Đổi Layout thành hàng ngang có thể vuốt (Horizontal Scroll) */
+    .trello-board { 
+        display: flex; /* Chuyển từ grid sang flex để dàn ngang */
+        overflow-x: auto; /* Bật thanh cuộn ngang */
+        scroll-snap-type: x mandatory; /* Bắt buộc hít (snap) theo trục ngang */
+        gap: 1rem; 
+        margin: 0 -1.5rem; /* Kéo tràn lề màn hình mobile */
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+        /* Giấu thanh cuộn mặc định trên webkit (Chrome/Safari) nhưng vẫn cho vuốt */
+        scrollbar-width: none; 
+    }
+
+    /* Tối ưu lại không gian âm (Whitespace) cho Mobile */
+    
+    .cards-vertical-list {
+        gap: 1rem; /* Ép khoảng cách giữa các thẻ Card gần lại (thay vì 1.5rem như desktop) */
+    }
+
+    .tool-card {
+        padding: 1.25rem; /* Giảm lề trong của thẻ để nhường chỗ cho text (thay vì 1.6rem) */
+        gap: 1rem; /* Giảm khoảng cách giữa icon, tiêu đề và mô tả trong card */
+    }
+
+    .card-meta p {
+        margin-top: 0.5rem; /* Thu hẹp khoảng cách giữa Tiêu đề và Mô tả */
+        line-height: 1.5; /* Hạ line-height xuống một chút để chữ gọn gàng hơn trên màn hẹp */
+    }
+
+    /* Thiết lập cho từng cột hít vào giữa màn hình khi vuốt */
+    .trello-column {
+        min-width: 85vw; /* Cột chiếm 85% chiều rộng màn hình, để lộ 15% cột tiếp theo nhằm gợi ý cho user biết có thể vuốt */
+        scroll-snap-align: center; /* Dừng cuộn sẽ hít vào giữa màn hình */
+    }
+
+    /* --- NÚT TAB TRÊN MOBILE (BOTTOM NAVIGATION BAR) --- */
+    .mobile-tabs-container {
+        display: flex;
+        justify-content: center;
+        
+        /* Cố định xuống nắp dưới màn hình */
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 999; /* Đảm bảo luôn đè lên mọi thứ */
+        
+        /* Hiệu ứng kính mờ tràn viền sát cạnh dưới */
+        background: rgba(16, 20, 44, 0.85);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px); /* Hỗ trợ Safari iOS */
+        border-top: 1px solid rgba(99, 102, 241, 0.3);
+        
+        /* Padding chuẩn cho ngón tay bấm, hỗ trợ cả màn hình iPhone tai thỏ/Dynamic Island */
+        padding: 12px 1.5rem;
+        padding-bottom: calc(12px + env(safe-area-inset-bottom)); 
+    }
+    
+    .mobile-tabs {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+        max-width: 400px;
+        /* Bỏ viền/nền ở đây vì đã chuyển ra background của container tràn viền */
+        background: transparent;
+        border: none;
+        padding: 0;
+    }
+    
+    .tab-btn {
+        flex: 1;
+        /* Nút thiết kế nổi bật, diện tích bấm lớn hơn cho ngón cái */
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-muted);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 12px 5px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    
+    .tab-btn.active {
+        background: var(--accent-cyan);
+        color: var(--bg-main);
+        box-shadow: 0 4px 15px rgba(34, 211, 238, 0.3);
+        border-color: transparent;
+    }
+
+    /* Đẩy Footer lên để khi cuộn kịch sàn không bị thanh Bottom Tab che mất */
+    footer {
+        padding-bottom: 100px; /* Bù lại khoảng không gian thanh Tab chiếm dụng */
+    }
+}
