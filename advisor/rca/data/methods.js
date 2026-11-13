@@ -19,7 +19,7 @@ en:{h:"Root-Cause Analysis Toolkit",s:"Find the root cause of a project problem 
  ph1:"Causes and frequency/cost (min. 3 rows)",ph2:"Failure mode, Severity, Occurrence, Detection (scale 1-10)",add:"Add row",item:"Name",go:"Analyze",back:"← Choose another method",edit:"← Edit data",pdf:"Print / PDF",md:"Copy Markdown",rt:"Copy Rich Text",ok:"Copied",fail:"Copy failed, use Print / PDF"}
 }};
 
-RCA_DATA.deckUrl="../index.html"; /* đổi thành đường dẫn trang PM Deck */
+RCA_DATA.deckUrl="../../index.html"; /* đổi thành đường dẫn trang PM Deck */
 RCA_DATA.groups=[{id:"explore",vi:"Define & Explore",en:"Define & Explore"},{id:"verify",vi:"Analyze & Verify",en:"Analyze & Verify"},{id:"act",vi:"Act & Prevent",en:"Act & Prevent"}];
 Object.assign(RCA_DATA.ui.vi,{ps:"Phạm vi đánh giá",ph1:"Nguyên nhân và giá trị",ph2:"Failure mode và điểm S / O / D",fishl:"Nguyên nhân theo nhóm",cph:"Mỗi dòng một nguyên nhân"});
 Object.assign(RCA_DATA.ui.en,{ps:"Assessment scope",ph1:"Causes and values",ph2:"Failure mode and S / O / D scores",fishl:"Causes by category",cph:"One cause per line"});
