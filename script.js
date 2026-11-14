@@ -10,6 +10,14 @@ const pmModules = [
         status: "active"
     },
     {
+        title: "Root-Cause Analysis Toolkit",
+        description: "Tìm nguyên nhân gốc của một vấn đề trong dự án bằng các method chuẩn.",
+        url: "https://ntkientn.github.io/pmdeck/advisor/rca/index.html",
+        icon: "fa-solid fa-arrow-up-right-dots", 
+        group: "advisors_analyzers",
+        status: "active"
+    },
+    {
         title: "SWOT Matrix Analytics",
         description: "Ma trận tương tác phân tích Điểm mạnh, Điểm yếu, Cơ hội & Thách thức cho dự án số hóa.",
         url: "https://ntkientn.github.io/pmdeck/advisor/SWOT.html",
