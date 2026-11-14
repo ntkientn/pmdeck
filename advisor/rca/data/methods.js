@@ -39,7 +39,7 @@ en:{p:"Write 1-2 sentences: what happened, where, since when, measurable impact.
 
 (()=>{const R=RCA_DATA,T=R.T={},t=(k,v,e)=>{T[k]=[v,e]};
 const add=(id,type,n,d,w,f)=>R.methods.push({id,type,vi:{n:n[0],d:d[0],w:w[0]},en:{n:n[1],d:d[1],w:w[1]},f});
-const A=(id,k,n)=>({id,t:"area",k,n}),I=(id,k)=>({id,t:"in",k}),W=(id,k)=>({id,t:"two",k}),RW=(id,k,n,c)=>({id,t:"rows",k,n,c}),C=(t,ph)=>({t,ph});
+const A=(id,k,n)=>({id,t:"area",k,n}),I=(id,k)=>({id,t:"in",k}),W=(id,k)=>({id,t:"two",k}),MS=(id,k)=>({id,t:"ms",k}),RW=(id,k,n,c)=>({id,t:"rows",k,n,c}),C=(t,ph)=>({t,ph});
 t("p","Mô tả vấn đề","Problem statement");t("p_h","Cái gì xảy ra, ở đâu, từ khi nào, tác động đo được. Chưa nêu nguyên nhân hay giải pháp.","What happened, where, since when, measurable impact. No causes or solutions yet.");
 const P=A("p","p",2);
 
@@ -87,7 +87,7 @@ add("capa","act",["CAPA Plan","CAPA Plan"],["Lập kế hoạch Corrective và P
 t("cp_a","Action","Action");t("cp_rows","Danh sách action","Action list");t("cp_rows_h","Type: C = Corrective (xử lý cái đã xảy ra), P = Preventive (ngăn xảy ra). Mỗi action cần Owner, Due và Metric đo hiệu quả.","Type: C = Corrective (fix what happened), P = Preventive (stop it happening). Every action needs an Owner, Due date and success Metric.");
 
 add("pm","act",["Post-mortem","Post-mortem"],["Biên bản blameless sau sự cố, kèm action items.","Blameless post-incident review with action items."],["sau incident hoặc sự cố lớn của dự án/hệ thống","after an incident or a major project/system failure"],
-[A("p","pm_p",2),A("impact","pm_i",2),A("timeline","pm_t",4),A("well","pm_w",2),A("wrong","pm_x",3),A("lucky","pm_l",2),A("causes","pm_c",3),A("actions","pm_a",3)]);
+[A("p","pm_p",2),A("impact","pm_i",2),MS("ms","pm_ms"),A("timeline","pm_t",4),A("well","pm_w",2),A("wrong","pm_x",3),A("lucky","pm_l",2),A("causes","pm_c",3),RW("acts","pm_acts",4,[C("t","pm_act"),C("t","P / D / M"),C("n","RC #"),C("t","Owner"),C("t","Due")])]);
 t("pm_p","Tóm tắt sự cố","Incident summary");t("pm_p_h","Một đoạn: chuyện gì, khi nào, kéo dài bao lâu.","One paragraph: what, when, how long.");
 t("pm_i","Tác động","Impact");t("pm_i_h","Người dùng, doanh thu, SLA, uy tín; càng định lượng càng tốt.","Users, revenue, SLA, reputation; quantify where possible.");
 t("pm_t","Timeline","Timeline");t("pm_t_h","Mỗi dòng: giờ - sự kiện (phát hiện, escalate, xử lý, khôi phục).","One per line: time - event (detect, escalate, fix, recover).");
@@ -97,6 +97,17 @@ t("pm_l","Điều may mắn","Where we got lucky");t("pm_l_h","Điều tránh đ
 t("pm_c","Root cause","Root causes");t("pm_c_h","Mỗi dòng một nguyên nhân gốc (chạy 5 Whys/Fishbone trước nếu chưa rõ).","One root cause per line (run 5 Whys/Fishbone first if unclear).");
 t("pm_a","Action items","Action items");t("pm_a_h","Mỗi dòng: việc - owner - hạn.","One per line: action - owner - due.");
 
-const O=["isnot","chg","whys","fish","pareto","scatter","run","cv","d8","capa","pm"];
+const O=["fish","whys","isnot","chg","pareto","scatter","run","cv","d8","capa","pm"];
 R.methods.sort((a,b)=>O.indexOf(a.id)-O.indexOf(b.id));
+})();
+Object.assign(RCA_DATA.ui.vi,{sample:"Thử với dữ liệu mẫu",reset:"Xóa dữ liệu",note:"Dữ liệu mẫu, chỉ mang tính minh họa. Không dùng làm báo cáo chính thức.",cfSample:"Dữ liệu hiện tại sẽ được thay bằng dữ liệu mẫu. Tiếp tục?",cfReset:"Xóa toàn bộ dữ liệu đã nhập?"});
+Object.assign(RCA_DATA.ui.en,{sample:"Try with sample data",reset:"Clear data",note:"Sample data, for illustration only. Not for use as an official report.",cfSample:"Current data will be replaced with sample data. Continue?",cfReset:"Clear all entered data?"});
+(()=>{const q=(k,v,e)=>{RCA_DATA.T[k]=[v,e]};
+q("pm_ms","Mốc thời gian sự cố","Incident milestones");
+q("pm_ms_h","Chọn ngày giờ cho từng mốc để tự tính TTD, TTA, TTM, TTR. Tối thiểu 2 mốc; mốc nào chưa biết thì bỏ trống.","Pick a date and time per milestone to compute TTD, TTA, TTM and TTR. At least 2 milestones; leave unknown ones empty.");
+q("pm_ms1","Bắt đầu ảnh hưởng","Impact started");q("pm_ms2","Phát hiện","Detected");q("pm_ms3","Tiếp nhận / escalate","Acknowledged / escalated");q("pm_ms4","Giảm nhẹ (mitigated)","Mitigated");q("pm_ms5","Khắc phục (resolved)","Resolved");
+q("pm_acts","Action items","Action items");
+q("pm_acts_h","Mỗi dòng một action. Type: P = Prevent (ngăn xảy ra), D = Detect (phát hiện sớm hơn), M = Mitigate (giảm thiệt hại). RC # = số thứ tự root cause (theo thứ tự dòng ở mục Root cause) mà action xử lý.","One action per row. Type: P = Prevent (stop it happening), D = Detect (catch it sooner), M = Mitigate (reduce damage). RC # = number of the root cause (by line order in the Root causes box) the action addresses.");
+q("pm_act","Action","Action");
+q("pm_c_h","Mỗi dòng một nguyên nhân gốc; được đánh số theo thứ tự dòng (1, 2, 3...) để gắn action bên dưới. Chạy 5 Whys hoặc Fishbone trước nếu chưa rõ.","One root cause per line, numbered by line order (1, 2, 3...) so the actions below can reference them. Run 5 Whys or Fishbone first if unclear.");
 })();
