@@ -22,14 +22,21 @@ E.whys=(d,L)=>{const t=T(L);
   t("Verify: đặt metric, owner, deadline và đo lại sau khi áp dụng.","Verify: set a metric, owner and deadline; re-measure after the change.")]),
  H("Limitations"),UL([t("Chỉ theo một nhánh nhân quả; vấn đề nhiều nguyên nhân cần Fishbone.","Follows a single causal path; multi-cause problems need Fishbone."),t("Kết quả phụ thuộc người phân tích (bias xác nhận).","Result depends on the analyst (confirmation bias).")]),
  H("Decision Notes"),UL([t("Chỉ đầu tư sửa root cause khi chi phí thấp hơn tổn thất lặp lại.","Invest in the root-cause fix only if its cost is below the recurring loss."),t("Nếu chưa có evidence cho mắt xích yếu nhất, thu thập data trước khi quyết định.","If the weakest link lacks evidence, collect data before deciding.")])]}};
-
+const svgFish=(d,L,nm)=>{const cut=(s,n)=>s.length>n?s.slice(0,n-1)+"…":s,A=[290,510,730],pr=String(d.p||""),l1=pr.slice(0,24),l2=pr.length>48?pr.slice(24,47)+"…":pr.slice(24),
+ xb=(up,ax,y)=>up?ax-70+(y-70)*70/160:ax-70+(390-y)*70/160;
+ let o=`<div class="tw"><svg class="chart" style="min-width:760px" viewBox="0 0 940 460" font-family="Segoe UI,system-ui,sans-serif"><line x1="40" y1="230" x2="740" y2="230" stroke="#1B2B4B" stroke-width="3"/><rect x="740" y="185" width="190" height="90" rx="14" fill="#E6F5EE" stroke="#17714A" stroke-width="2"/><text x="835" y="225" font-size="12" font-weight="700" text-anchor="middle" fill="#17714A">${esc(l1)}</text><text x="835" y="243" font-size="12" text-anchor="middle" fill="#1D2433">${esc(l2)}</text>`;
+ d.c.forEach(x=>{const ci=+x.k,up=ci<3,ax=A[ci%3];
+  o+=`<line x1="${ax-70}" y1="${up?70:390}" x2="${ax}" y2="230" stroke="#1B2B4B" stroke-width="2"/><text x="${ax-70}" y="${up?56:414}" font-size="13" font-weight="700" text-anchor="middle" fill="${x.l.length?"#17714A":"#8A94A3"}">${esc(nm(x))} · ${x.l.length}</text>`;
+  x.l.slice(0,5).forEach((s,j)=>{const y=up?96+j*26:364-j*26,p=s[0]=="!",X=xb(up,ax,y);
+   o+=`<line x1="${X-24}" y1="${y}" x2="${X}" y2="${y}" stroke="#1B2B4B"/><text x="${X-28}" y="${y+4}" font-size="11" text-anchor="end" fill="${p?"#17714A":"#1D2433"}"${p?' font-weight="700"':""}>${esc(cut(s.replace(/^!\s*/,""),26))}</text>`})});
+ return o+"</svg></div>"};
 E.fish=(d,L)=>{const t=T(L),i=L=="vi"?1:0,tot=d.c.reduce((s,x)=>s+x.l.length,0);
  if(!d.p||tot<3)return{err:t("Nhập vấn đề và tối thiểu 3 nguyên nhân.","Enter the problem and at least 3 causes.")};
  const nm=x=>cats[+x.k][i],top=[...d.c].sort((a,b)=>b.l.length-a.l.length)[0],emp=d.c.filter(x=>!x.l.length).map(nm);
  const hi=d.c.flatMap(x=>x.l.filter(s=>s[0]=="!").map(s=>`${s.replace(/^!\s*/,"")} (${nm(x)})`));
  return{blocks:[
  H("Executive Summary"),P(t(`${tot} nguyên nhân tiềm năng cho "${d.p}", tập trung nhiều nhất ở nhóm ${nm(top)} (${top.l.length}).`,`${tot} potential causes for "${d.p}", most concentrated in ${nm(top)} (${top.l.length}).`)),
- H(t("Phân bố theo nhóm","Distribution by category")),TB([t("Nhóm","Category"),t("Số nguyên nhân","Causes"),"%"],d.c.map(x=>[nm(x),x.l.length,Math.round(x.l.length/tot*100)+"%"])),
+{t:"svg",x:svgFish(d,L,nm)},H(t("Phân bố theo nhóm","Distribution by category")),TB([t("Nhóm","Category"),t("Số nguyên nhân","Causes"),"%"],d.c.map(x=>[nm(x),x.l.length,Math.round(x.l.length/tot*100)+"%"])),
  H(t("Các nhánh","Branches")),UL(d.c.filter(x=>x.l.length).map(x=>`${nm(x)}: ${x.l.map(s=>s.replace(/^!\s*/,"")).join("; ")}`)),
  H(t("Nguyên nhân ưu tiên kiểm chứng","Priority hypotheses")),hi.length?UL(hi):P(t('Chưa đánh dấu "!". Hãy chọn 2-3 nguyên nhân khả năng cao nhất để kiểm chứng.','None marked "!". Pick the 2-3 most likely causes to validate.')),
  H(t("Góc nhìn","Insights")),UL([
@@ -164,14 +171,38 @@ E.capa=(d,L)=>{const t=T(L),r=(d.cp||[]).filter(x=>x[0]).map(x=>[x[0],/^p/i.test
  H("Limitations"),UL([t("Công cụ không kiểm tra action có thực sự xử lý root cause.","The tool does not verify that an action truly addresses the root cause.")]),
  H("Decision Notes"),UL([t("Mỗi action chỉ một owner chịu trách nhiệm.","One accountable owner per action.")])]}};
 
-E.pm=(d,L)=>{const t=T(L),S=[["p",t("Tóm tắt","Summary")],["impact",t("Tác động","Impact")],["timeline","Timeline"],["well",t("Điều làm tốt","What went well")],["wrong",t("Điều chưa tốt","What went wrong")],["lucky",t("Điều may mắn","Where we got lucky")],["causes","Root causes"],["actions","Action items"]],done=S.filter(([k])=>d[k]).length;
- if(!d.p||done<4)return{err:t("Nhập tóm tắt và tối thiểu 4 mục.","Enter the summary and at least 4 sections.")};
- const w=[lines(d.timeline).length<3?t("Timeline dưới 3 sự kiện: khó dựng lại diễn biến.","Timeline has under 3 events: hard to reconstruct."):"",
-  HUM.test((d.wrong||"")+(d.causes||""))?t("Có dấu hiệu quy trách nhiệm cá nhân: viết lại theo hệ thống/process.","Signs of blaming individuals: rewrite in terms of systems/process."):"",
-  !d.lucky?t("Chưa có mục 'may mắn': có thể còn rủi ro tiềm ẩn.","No 'got lucky' items: hidden risks may remain."):"",
-  !d.actions?t("Chưa có action items: post-mortem không tạo thay đổi.","No action items: the post-mortem changes nothing."):""].filter(Boolean);
- return{blocks:[H("Executive Summary"),P(d.p),...rep(d,S.slice(1)),
- H(t("Kiểm tra chất lượng","Quality check")),UL(w.length?w:[t("Biên bản đầy đủ và blameless.","Review is complete and blameless.")]),
- H("Recommended Actions"),UL([t("Gán owner và hạn cho từng action, đưa vào CAPA Plan.","Assign owner and due date to each action and move them into a CAPA Plan."),t("Chia sẻ biên bản và cập nhật Lessons Learned Register.","Share the review and update the Lessons Learned Register.")]),
- H("Limitations"),UL([t("Giá trị phụ thuộc vào văn hóa blameless của tổ chức.","Value depends on the organization's blameless culture.")])]}};
-return E;})();
+E.pm=(d,L)=>{const t=T(L),ts=[1,2,3,4,5].map(i=>d["ms"+i]?Date.parse(d["ms"+i]):NaN),
+ ac=(d.acts||[]).filter(x=>x[0]).map(x=>[x[0],/^p/i.test(x[1]||"")?"Prevent":/^d/i.test(x[1]||"")?"Detect":/^m/i.test(x[1]||"")?"Mitigate":"?",parseInt(x[2])||0,x[3]||"-",x[4]||"-"]),
+ rc=lines(d.causes),tl=lines(d.timeline),
+ fm=m=>m<60?`${Math.round(m)} ${t("phút","min")}`:m<1440?`${Math.floor(m/60)} ${t("giờ","h")} ${Math.round(m%60)} ${t("phút","min")}`:`${Math.floor(m/1440)} ${t("ngày","d")} ${Math.round(m%1440/60)} ${t("giờ","h")}`,
+ PH=["Detection","Acknowledge","Mitigation","Resolution"],CL=["#E2512D","#9A6700","#2F6FDE","#2E9D6B"],
+ sg=PH.map((n,i)=>({n,m:(ts[i+1]-ts[i])/60000})).filter(x=>x.m>=0),sum=sg.reduce((s,x)=>s+x.m,0),top=[...sg].sort((a,b)=>b.m-a.m)[0],
+ mt=[["TTD",0,1,t("Từ lúc bắt đầu đến lúc phát hiện","Start to detection")],["TTA",1,2,t("Từ phát hiện đến tiếp nhận","Detection to acknowledgement")],["TTM",0,3,t("Từ lúc bắt đầu đến giảm nhẹ","Start to mitigation")],["TTR",0,4,t("Từ lúc bắt đầu đến khắc phục","Start to resolution")]].map(([n,a,b,w])=>[n,w,(ts[b]-ts[a])/60000]).filter(x=>x[2]>=0),
+ neg=ts.filter(x=>isFinite(x)).some((x,i,v)=>i&&x<v[i-1]),
+ done=[d.p,d.impact,d.timeline,d.well,d.wrong,d.lucky,d.causes].filter(Boolean).length+(ac.length?1:0)+(ts.filter(x=>isFinite(x)).length>=2?1:0);
+ if(!d.p||done<4)return{err:t("Nhập tóm tắt và tối thiểu 3 mục khác (mốc thời gian, timeline, root cause, action...).","Enter the summary and at least 3 other sections (milestones, timeline, root causes, actions...).")};
+ const adv={Detection:[t("thêm monitoring, alert hoặc test sớm hơn","add earlier monitoring, alerts or tests"),"Detect"],Acknowledge:[t("cải thiện escalation và kênh báo sự cố","improve escalation and incident channels"),"Mitigate"],Mitigation:[t("chuẩn bị runbook, rollback, feature flag","prepare runbooks, rollback, feature flags"),"Mitigate"],Resolution:[t("rút ngắn thời gian sửa tận gốc: chia nhỏ thay đổi, tự động hóa test","shorten the permanent fix: smaller changes, test automation"),""]};
+ const cov=rc.map((c,i)=>[i+1,c,ac.filter(a=>a[2]==i+1)]),unc=cov.filter(x=>!x[2].length),orph=ac.filter(a=>!a[2]||a[2]>rc.length),ins=[];
+ let x0=0;const svg=sum>0?`<div class="tw"><svg class="chart" style="min-width:520px" viewBox="0 0 720 64">`+sg.map(s=>{const w=s.m/sum*720,o=`<rect x="${x0}" y="4" width="${w}" height="36" fill="${CL[PH.indexOf(s.n)]}"/><text x="${x0+w/2}" y="27" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">${w>60?Math.round(s.m/sum*100)+"%":""}</text>`;x0+=w;return o}).join("")+PH.map((n,i)=>`<rect x="${10+i*180}" y="50" width="10" height="10" fill="${CL[i]}"/><text x="${26+i*180}" y="59" font-size="12" fill="#1D2433">${n}</text>`).join("")+"</svg></div>":"";
+ if(neg)ins.push(t("Thứ tự các mốc thời gian không hợp lý (mốc sau sớm hơn mốc trước): kiểm tra lại.","Milestones are out of order (a later one precedes an earlier one): check them."));
+ if(top&&sum>0){ins.push(t(`Giai đoạn dài nhất: ${top.n} (${fm(top.m)}, ${Math.round(top.m/sum*100)}%): ${adv[top.n][0]}.`,`Longest phase: ${top.n} (${fm(top.m)}, ${Math.round(top.m/sum*100)}%): ${adv[top.n][0]}.`));
+  if(adv[top.n][1]&&ac.length&&!ac.some(a=>a[1]==adv[top.n][1]))ins.push(t(`Chưa có action loại ${adv[top.n][1]} cho giai đoạn ${top.n}.`,`No ${adv[top.n][1]} action addresses the ${top.n} phase.`))}
+ if(ac.length&&!ac.some(a=>a[1]=="Prevent"))ins.push(t("Không có action Prevent: sự cố có thể tái diễn.","No Prevent action: the incident may recur."));
+ if(unc.length)ins.push(t(`Root cause chưa có action: ${unc.map(x=>"#"+x[0]).join(", ")}.`,`Root causes without an action: ${unc.map(x=>"#"+x[0]).join(", ")}.`));
+ if(orph.length)ins.push(t(`${orph.length} action chưa gắn root cause hợp lệ (cột RC #).`,`${orph.length} action(s) not linked to a valid root cause (RC # column).`));
+ if(ac.some(a=>a[3]=="-"||a[4]=="-"))ins.push(t("Có action thiếu Owner hoặc Due.","Some actions lack an Owner or Due date."));
+ if(tl.length<3)ins.push(t("Timeline dưới 3 sự kiện: khó dựng lại diễn biến.","Timeline has under 3 events: hard to reconstruct."));
+ if(HUM.test((d.wrong||"")+" "+(d.causes||"")))ins.push(t("Có dấu hiệu quy trách nhiệm cá nhân: viết lại theo hệ thống và process.","Signs of blaming individuals: rewrite in terms of systems and process."));
+ if(!d.lucky)ins.push(t("Chưa có mục «may mắn»: có thể còn rủi ro tiềm ẩn.","No 'got lucky' items: hidden risks may remain."));
+ if(!ins.length)ins.push(t("Biên bản đầy đủ, nhất quán và blameless.","The review is complete, consistent and blameless."));
+ const R=mt.find(x=>x[0]=="TTR");
+ return{blocks:[H("Executive Summary"),P(d.p),...(R?[P(t(`Tổng thời gian sự cố: ${fm(R[2])}.${top?` Giai đoạn dài nhất: ${top.n}.`:""}`,`Total incident duration: ${fm(R[2])}.${top?` Longest phase: ${top.n}.`:""}`))]:[]),
+ ...rep(d,[["impact",t("Tác động","Impact")]]),
+ ...(mt.length?[H(t("Phân tích thời gian sự cố","Incident timing")),...(svg?[{t:"svg",x:svg}]:[]),TB(["Metric",t("Ý nghĩa","Meaning"),t("Thời lượng","Duration")],mt.map(x=>[x[0],x[1],fm(x[2])]))]:[]),
+ ...rep(d,[["timeline","Timeline"],["well",t("Điều làm tốt","What went well")],["wrong",t("Điều chưa tốt","What went wrong")],["lucky",t("Điều may mắn","Where we got lucky")],["causes","Root causes"]]),
+ ...(ac.length?[H("Action items"),TB(["#","Action","Type","RC #","Owner","Due"],ac.map((a,i)=>[i+1,a[0],a[1],a[2]||"-",a[3],a[4]]))]:[]),
+ ...(rc.length?[H(t("Root cause và action","Root cause to action coverage")),TB(["RC #","Root cause","Actions","Types"],cov.map(x=>[x[0],x[1],x[2].length,[...new Set(x[2].map(a=>a[1]))].join(", ")||"-"]))]:[]),
+ H(t("Góc nhìn","Insights")),UL(ins),
+ H("Recommended Actions"),UL([t("Gán owner và hạn cho từng action, theo dõi trong CAPA Plan.","Assign an owner and due date to each action and track them in a CAPA Plan."),t("Chia sẻ biên bản và cập nhật Lessons Learned Register.","Share the review and update the Lessons Learned Register.")]),
+ H("Limitations"),UL([t("Các mốc thời gian phụ thuộc người nhập; nên lấy từ log, ticket hoặc chat thật.","Milestones depend on the author; take them from real logs, tickets or chat history."),t("Giá trị phụ thuộc vào văn hóa blameless của tổ chức.","Value depends on the organization's blameless culture.")])]}};
+ return E;})();
